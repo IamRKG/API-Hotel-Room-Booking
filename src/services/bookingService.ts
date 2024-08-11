@@ -5,8 +5,17 @@ import Room from '../models/room';
 
 
 export const getBookings = async (): Promise<IBooking[]> => {
-  return  await Booking.find().populate('userId', 'name email').populate('roomId', 'number type');
-};
+  try {
+    return await Booking.find()
+      .populate('userId', 'name email')
+      .populate('roomId', 'number type')
+      .lean();
+  } catch (error) {
+    console.error('Error fetching bookings:', error);
+    throw error;
+  }
+}
+
 
 export const getBookingById = async (id: string, userId: string): Promise<IBooking | null> => {
   const booking = await Booking.findById(id).populate('roomId');
