@@ -1,22 +1,8 @@
 import Room, { IRoom } from '../models/room';
 import Booking from '../models/booking';
 
-export const getRooms = async (req: any): Promise<{ rooms: IRoom[], totalPages: number, currentPage: number }> => {
-  const page = parseInt(req.query.page as string) || 1;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const skip = (page - 1) * limit;
-
-  try {
-    const rooms = await Room.find().skip(skip).limit(limit);
-    const total = await Room.countDocuments();
-    return {
-      rooms,
-      totalPages: Math.ceil(total / limit),
-      currentPage: page
-    };
-  } catch (error) {
-    throw new Error('Error fetching rooms');
-  }
+export const getRooms = async (): Promise<IRoom[]> => {
+  return Room.find();
 };
 
 export const getRoomById = async (id: string): Promise<IRoom | null> => {

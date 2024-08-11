@@ -36,7 +36,7 @@ router.get('/availability', async (req: Request, res: Response, next: NextFuncti
 // Get all rooms
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const rooms = await roomService.getRooms(req);
+    const rooms = await roomService.getRooms();
     res.json(rooms);
   } catch (error) {
     next(error);
