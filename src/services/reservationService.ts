@@ -1,7 +1,3 @@
-// In src/services/reservationService.ts
-
-import { Room } from '../models/room';
-
 interface Reservation {
   roomId: string;
   checkInDate: Date;
