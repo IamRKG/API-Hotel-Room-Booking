@@ -1,0 +1,4 @@
+runtime: nodejs18
+
+env_variables:
+  MONGODB_URI: "mongodb+srv://user_admin:${encodeURIComponent('qwerty123456')}@hotel-room-booking.jh4uw.mongodb.net/hotel_booking?retryWrites=true&w=majority"
