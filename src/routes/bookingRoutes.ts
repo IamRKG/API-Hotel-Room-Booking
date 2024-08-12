@@ -9,6 +9,18 @@ import room from '../models/room';
 
 const router = express.Router();
 
+const formatDate = (date:any) => {
+  return new Date(date).toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+};
+
+
 // Get all bookings (admin only)
 router.get('/', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,6 +71,9 @@ router.post('/', authenticateToken, async (req: Request & { user?: { id: string 
       checkOutDate,
       totalPrice
     };
+
+    const formattedCheckIn = formatDate(checkInDate);
+const formattedCheckOut = formatDate(checkOutDate);
     
     const newBooking = await bookingService.createBooking(bookingData as any);
 
@@ -66,19 +81,12 @@ router.post('/', authenticateToken, async (req: Request & { user?: { id: string 
     const roomDoc = await room.findById(roomId);
 
     if (userDoc && roomDoc) {
-      await sendEmail(
-        userDoc.email,
-        'Booking Confirmation',
-        `Your booking for Room ${roomDoc.number} from ${checkInDate} to ${checkOutDate} has been confirmed.`
-      );
+      await sendEmail(userDoc.email, 'Booking Confirmation', `Your booking for Room ${roomDoc.number} from ${formattedCheckIn} to ${formattedCheckOut} has been confirmed.`);
+
     }
 
     const adminEmail = process.env.ADMIN_EMAIL || 'radhacreative@gmail.com';
-    await sendEmail(
-      adminEmail,
-      'New Booking Notification',
-      `A new booking has been made:\n\nRoom: ${roomDoc?.number}\nUser: ${userDoc?.email}\nCheck-in: ${checkInDate}\nCheck-out: ${checkOutDate}`
-    );
+    await sendEmail(adminEmail, 'New Booking Notification', `A new booking has been made:\n\nRoom: ${roomDoc?.number}\nUser: ${userDoc?.email}\nCheck-in: ${formattedCheckIn}\nCheck-out: ${formattedCheckOut}`);
     
 
     res.status(201).json(newBooking);
